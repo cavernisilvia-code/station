@@ -61,7 +61,7 @@ final class RailwayStationTest extends TestCase
         $station = new RailwayStation(1, 100);
         $train = new Train('T1', 50, 0);
         $initialWaiting = $station->getWaitingPassengers();
-        $boarded = $station->boardPassengers($train, 30);
+        $boarded = $station->boardRandomPassengers($train, 30);
         // Deve essere tra 0 e 30
         $this->assertGreaterThanOrEqual(0, $boarded);
         $this->assertLessThanOrEqual(30, $boarded);
@@ -79,13 +79,14 @@ final class RailwayStationTest extends TestCase
         // Caso 1: nessuno in attesa
         $station = new RailwayStation(1, 0);
         $train = new Train('T1', 50, 0);
-        $boarded = $station->boardPassengers($train, 30);
+        $boarded = $station->boardRandomPassengers($train, 30);
         $this->assertSame(0, $boarded);
         // Caso 2: treno pieno
         $station2 = new RailwayStation(1, 100);
         $trainFull = new Train('T2', 50, 50);
-        $boarded2 = $station2->boardPassengers($trainFull, 30);
+        $boarded2 = $station2->boardRandomPassengers($trainFull, 30);
         $this->assertSame(0, $boarded2);
+        //self::assertsame(0, $boarder2); da modificare altro codice
     }
         
 }

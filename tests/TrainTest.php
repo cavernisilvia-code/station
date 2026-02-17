@@ -13,17 +13,20 @@ final class TrainTest extends TestCase
     public function test_constructor_validates_id_capacity_and_passengers(): void
     {
         //$this->markTestIncomplete('Testa validazioni: id non vuoto, maxCapacity >= 1, passengers >= 0 e <= maxCapacity.');
-        $train = new Train('T1', 100, 50);
+        $train = new Train('T1', 50, 15);
         self::assertSame('T1', $train->getId());
         //$this->assertSame('T1', $train->getId());    
-        self::assertSame(100, $train->getCapacity());
-        self::assertSame(50, $train->getPassengers());
+        self::assertSame(50, $train->getCapacity());
+        self::assertSame(15, $train->getPassengers());
 
         $this->expectException(\InvalidArgumentException::class);
-        new Train('', 100, 50);
+        new Train('', 50, 60); //questo spegne i test successivi; o si separano le eccezioni o si spegne in qualche modo; va fatta una eccezioni per test
 
         $this->expectException(\InvalidArgumentException::class);
-        new Train('T1', 0, 0);
+        new Train('T1', -5, 15);
+
+        $this->expectException(\InvalidArgumentException::class);
+        new Train('T1', 50, -15);
     }
 
     public function test_request_track_sets_current_track_when_assigned(): void
@@ -44,25 +47,47 @@ final class TrainTest extends TestCase
     public function test_request_track_sets_current_track_to_null_when_station_is_full(): void
     {
         //$this->markTestIncomplete('Testa che se la stazione non ha binari liberi, requestTrack() ritorni null e currentTrack() sia null.');
+        $station = new RailwayStation(1);
+        $station->assignFirstFreeTrack('T2'); // occupa l’unico binario
+        $train = new Train('T1', 100, 0);
+        $assigned = $train->requestTrack($station);
+        $this->assertNull($assigned);
+        $this->assertNull($train->getAssignedTrack());
+        $this->assertFalse($train->isInStation());
     }
 
     public function test_disembark_decreases_passengers_and_adds_random_waiting_passengers(): void
     {
         //$this->markTestIncomplete('Testa disembark(): i passeggeri a bordo diminuiscono; una parte (controllata con FixedRandomizer) viene aggiunta ai waitingPassengers della stazione; il metodo ritorna quel numero.');
+
     }
 
     public function test_disembark_never_disembarks_more_than_on_board(): void
     {
         //$this->markTestIncomplete('Testa che se chiedi di far scendere più passeggeri di quelli presenti, scendano solo quelli disponibili (passengers non va sotto zero).');
+        $station = new RailwayStation(1, 0);
+        $train = new Train('T1', 100, 10);
+        $train->requestTrack($station);
+        [$dropped, $addedToStation] = $train->dropOffPassengers(50); // chiedo più di quelli a bordo
+        $this->assertLessThanOrEqual(10, $dropped);
+        $this->assertGreaterThanOrEqual(0, $train->getPassengers());
     }
 
     public function test_board_increases_passengers_and_throws_if_exceeds_capacity(): void
     {
         //$this->markTestIncomplete('Testa board(): aumenta passengers; se supera maxCapacity lancia DomainException.');
+        $train = new Train('T1', 100, 50);
+        // Caso valido
+        $train->addPassengers(20);
+        $this->assertSame(70, $train->getPassengers());
+        // Caso che supera capacità
+        $this->expectException(\DomainException::class);
+        $train->addPassengers(50); // 70 + 50 = 120 > 100
     }
 
     public function test_depart_releases_track_and_resets_current_track(): void
     {
         //$this->markTestIncomplete('Testa che depart() liberi il binario in stazione e imposti currentTrack() a null.');
+
     }
 }

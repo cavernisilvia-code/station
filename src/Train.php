@@ -118,7 +118,7 @@ final class Train
             throw new \InvalidArgumentException('count must be >= 0');
         }
         if ($this->passengers + $count > $this->capacity) {
-            throw new \RuntimeException("Cannot add $count passengers: would exceed capacity");
+            throw new \DomainException("Cannot add $count passengers: would exceed capacity"); //throw new \InvalidArgumentException
         }
 
         $this->passengers += $count;

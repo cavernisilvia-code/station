@@ -52,12 +52,21 @@ final class RailwayStation
      */
     public function assignFirstFreeTrack(string $trainId): ?int
     {
+// 🔎 aggiunto
+    foreach ($this->tracks as $trackNumber => $occupant) {
+        if ($occupant === $trainId) {
+            return $trackNumber;
+        }
+    }
+
         foreach ($this->tracks as $trackNumber => $occupiedBy) {
             if ($occupiedBy === null) {
                 $this->tracks[$trackNumber] = $trainId;
                 return $trackNumber;
             }
         }
+
+       
 
         return null;
     }
