@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<ruleset name="Project Coding Standard">
+
+    <!-- Descrizione opzionale -->
+    <description>PSR-12 coding standard for src and tests</description>
+
+    <!-- Standard di riferimento -->
+    <rule ref="PSR12"/>
+
+    <!-- Directory da analizzare -->
+    <file>src</file>
+    <file>tests</file>
+
+    <!-- Esclusioni -->
+    <exclude-pattern>vendor/*</exclude-pattern>
+
+    <!-- Migliora output CLI -->
+    <arg name="colors"/>
+    <arg value="p"/>
+
+</ruleset>
